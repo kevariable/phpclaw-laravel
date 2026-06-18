@@ -7,9 +7,9 @@ namespace Kevariable\PhpclawLaravel\Routing;
 use Kevariable\PhpclawLaravel\Data\RoleDefinition;
 use Kevariable\PhpclawLaravel\Exceptions\UnknownRoleException;
 
-final class RoleRouter
+class RoleRouter
 {
-    public function __construct(private array $roles) {}
+    public function __construct(protected array $roles) {}
 
     public function has(string $role): bool
     {

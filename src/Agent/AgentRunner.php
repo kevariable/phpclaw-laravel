@@ -11,11 +11,11 @@ use Kevariable\PhpclawLaravel\Exceptions\GenerationFailedException;
 use Kevariable\PhpclawLaravel\Routing\RoleRouter;
 use Throwable;
 
-final readonly class AgentRunner
+readonly class AgentRunner
 {
     public function __construct(
-        private LlmDriver $driver,
-        private RoleRouter $router,
+        protected LlmDriver $driver,
+        protected RoleRouter $router,
     ) {}
 
     public function run(

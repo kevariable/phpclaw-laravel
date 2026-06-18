@@ -7,7 +7,7 @@ namespace Kevariable\PhpclawLaravel\Tools;
 use InvalidArgumentException;
 use Kevariable\PhpclawLaravel\Contracts\Tool;
 
-final class CalculatorTool implements Tool
+class CalculatorTool implements Tool
 {
     public function name(): string
     {

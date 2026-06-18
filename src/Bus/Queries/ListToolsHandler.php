@@ -7,9 +7,9 @@ namespace Kevariable\PhpclawLaravel\Bus\Queries;
 use Kevariable\PhpclawLaravel\Contracts\Handler;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 
-final readonly class ListToolsHandler implements Handler
+readonly class ListToolsHandler implements Handler
 {
-    public function __construct(private ToolRegistry $registry) {}
+    public function __construct(protected ToolRegistry $registry) {}
 
     public function handle(object $message): array
     {

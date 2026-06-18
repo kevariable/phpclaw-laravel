@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Tests\Fakes;
 
 use Kevariable\PhpclawLaravel\Contracts\Tool;
 
-final class AllTypesTool implements Tool
+class AllTypesTool implements Tool
 {
     public function name(): string
     {

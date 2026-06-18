@@ -7,6 +7,10 @@ namespace Kevariable\PhpclawLaravel;
 use Illuminate\Contracts\Foundation\Application;
 use Kevariable\PhpclawLaravel\Agent\AgentRunner;
 use Kevariable\PhpclawLaravel\Bus\ContainerCommandBus;
+use Kevariable\PhpclawLaravel\Console\ChatCommand;
+use Kevariable\PhpclawLaravel\Console\RolesCommand;
+use Kevariable\PhpclawLaravel\Console\RunCommand;
+use Kevariable\PhpclawLaravel\Console\ToolsCommand;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
@@ -16,13 +20,19 @@ use Kevariable\PhpclawLaravel\Tools\ArrayToolRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-final class PhpclawServiceProvider extends PackageServiceProvider
+class PhpclawServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
             ->name('phpclaw-laravel')
-            ->hasConfigFile('phpclaw');
+            ->hasConfigFile('phpclaw')
+            ->hasCommands([
+                RunCommand::class,
+                RolesCommand::class,
+                ToolsCommand::class,
+                ChatCommand::class,
+            ]);
     }
 
     public function packageRegistered(): void

@@ -6,4 +6,4 @@ namespace Kevariable\PhpclawLaravel\Bus\Queries;
 
 use Kevariable\PhpclawLaravel\Contracts\Query;
 
-final readonly class ListToolsQuery implements Query {}
+readonly class ListToolsQuery implements Query {}

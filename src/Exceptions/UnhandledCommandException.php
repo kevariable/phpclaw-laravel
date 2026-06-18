@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Exceptions;
 
 use RuntimeException;
 
-final class UnhandledCommandException extends RuntimeException
+class UnhandledCommandException extends RuntimeException
 {
     public static function for(string $message): self
     {

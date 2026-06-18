@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kevariable\PhpclawLaravel\Data;
 
-final readonly class GenerationResult
+readonly class GenerationResult
 {
     public function __construct(
         public string $text,

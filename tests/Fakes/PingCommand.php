@@ -6,4 +6,4 @@ namespace Kevariable\PhpclawLaravel\Tests\Fakes;
 
 use Kevariable\PhpclawLaravel\Contracts\Command;
 
-final class PingCommand implements Command {}
+class PingCommand implements Command {}

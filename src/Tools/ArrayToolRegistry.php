@@ -8,9 +8,9 @@ use Kevariable\PhpclawLaravel\Contracts\Tool;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Exceptions\UnknownToolException;
 
-final class ArrayToolRegistry implements ToolRegistry
+class ArrayToolRegistry implements ToolRegistry
 {
-    private array $tools = [];
+    protected array $tools = [];
 
     public function register(Tool $tool): void
     {

@@ -12,7 +12,7 @@ use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Messages\Message;
 
-final class LaravelAiDriver implements LlmDriver
+class LaravelAiDriver implements LlmDriver
 {
     public function generate(GenerationRequest $request): GenerationResult
     {
@@ -36,7 +36,7 @@ final class LaravelAiDriver implements LlmDriver
         );
     }
 
-    private function toMessages(array $messages): array
+    protected function toMessages(array $messages): array
     {
         return array_map(
             fn (array $message): Message => new Message($message['role'], $message['content']),
@@ -44,7 +44,7 @@ final class LaravelAiDriver implements LlmDriver
         );
     }
 
-    private function toTools(array $tools): array
+    protected function toTools(array $tools): array
     {
         return array_map(
             fn (Tool $tool): LaravelAiToolAdapter => new LaravelAiToolAdapter($tool),

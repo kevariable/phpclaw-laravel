@@ -9,11 +9,11 @@ use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\Handler;
 use Kevariable\PhpclawLaravel\Exceptions\UnhandledCommandException;
 
-final readonly class ContainerCommandBus implements CommandBus
+readonly class ContainerCommandBus implements CommandBus
 {
     public function __construct(
-        private Container $container,
-        private array $handlers,
+        protected Container $container,
+        protected array $handlers,
     ) {}
 
     public function dispatch(object $message): mixed

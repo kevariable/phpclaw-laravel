@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-final class Phpclaw extends Facade
+class Phpclaw extends Facade
 {
     protected static function getFacadeAccessor(): string
     {

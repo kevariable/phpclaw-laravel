@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Tests\Fakes;
 
 use Kevariable\PhpclawLaravel\Contracts\Handler;
 
-final class PingHandler implements Handler
+class PingHandler implements Handler
 {
     public function handle(object $message): string
     {

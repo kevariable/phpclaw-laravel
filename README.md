@@ -71,6 +71,17 @@ Phpclaw::tools();  // list<Tool>
 ],
 ```
 
+### Artisan commands
+
+```bash
+php artisan phpclaw:run reasoning "Summarise the CAP theorem in one sentence."
+php artisan phpclaw:roles      # table of roles -> provider, model, fallbacks
+php artisan phpclaw:tools      # table of registered tools
+php artisan phpclaw:chat --role=reasoning   # interactive REPL; type 'exit' to quit
+```
+
+`phpclaw:run` exits non-zero on an unknown role or when every model candidate fails. `phpclaw:chat` keeps the session going on per-turn errors and only stops on `exit`/`quit`/empty input.
+
 ### Custom tools
 
 Implement `Kevariable\PhpclawLaravel\Contracts\Tool` and add the class to `phpclaw.tools`.

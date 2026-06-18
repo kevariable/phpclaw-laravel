@@ -9,13 +9,13 @@ use Kevariable\PhpclawLaravel\Data\GenerationRequest;
 use Kevariable\PhpclawLaravel\Data\GenerationResult;
 use RuntimeException;
 
-final class FakeLlmDriver implements LlmDriver
+class FakeLlmDriver implements LlmDriver
 {
     public array $requests = [];
 
     public function __construct(
-        private array $failModels = [],
-        private string $text = 'ok',
+        protected array $failModels = [],
+        protected string $text = 'ok',
     ) {}
 
     public function generate(GenerationRequest $request): GenerationResult

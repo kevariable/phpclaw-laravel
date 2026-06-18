@@ -9,9 +9,9 @@ use Kevariable\PhpclawLaravel\Agent\AgentRunner;
 use Kevariable\PhpclawLaravel\Contracts\Handler;
 use Kevariable\PhpclawLaravel\Data\GenerationResult;
 
-final readonly class RunAgentHandler implements Handler
+readonly class RunAgentHandler implements Handler
 {
-    public function __construct(private AgentRunner $runner) {}
+    public function __construct(protected AgentRunner $runner) {}
 
     public function handle(object $message): GenerationResult
     {

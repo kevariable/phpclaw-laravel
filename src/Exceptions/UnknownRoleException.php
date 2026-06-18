@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Exceptions;
 
 use InvalidArgumentException;
 
-final class UnknownRoleException extends InvalidArgumentException
+class UnknownRoleException extends InvalidArgumentException
 {
     public static function for(string $role): self
     {

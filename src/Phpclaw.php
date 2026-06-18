@@ -10,9 +10,9 @@ use Kevariable\PhpclawLaravel\Bus\Queries\ListToolsQuery;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Data\GenerationResult;
 
-final readonly class Phpclaw
+readonly class Phpclaw
 {
-    public function __construct(private CommandBus $bus) {}
+    public function __construct(protected CommandBus $bus) {}
 
     public function run(
         string $role,

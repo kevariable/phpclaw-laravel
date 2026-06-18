@@ -9,9 +9,9 @@ use Kevariable\PhpclawLaravel\Contracts\Tool as PhpclawTool;
 use Laravel\Ai\Contracts\Tool as LaravelAiTool;
 use Laravel\Ai\Tools\Request;
 
-final class LaravelAiToolAdapter implements LaravelAiTool
+class LaravelAiToolAdapter implements LaravelAiTool
 {
-    public function __construct(private PhpclawTool $tool) {}
+    public function __construct(protected PhpclawTool $tool) {}
 
     public function name(): string
     {

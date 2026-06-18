@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Bus\Commands;
 
 use Kevariable\PhpclawLaravel\Contracts\Command;
 
-final readonly class RunAgentCommand implements Command
+readonly class RunAgentCommand implements Command
 {
     public function __construct(
         public string $role,

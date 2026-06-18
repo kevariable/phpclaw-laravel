@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kevariable\PhpclawLaravel\Data;
 
-final readonly class RoleDefinition
+readonly class RoleDefinition
 {
     public function __construct(
         public string $name,

@@ -8,9 +8,9 @@ use Illuminate\Http\Client\Factory as HttpClient;
 use InvalidArgumentException;
 use Kevariable\PhpclawLaravel\Contracts\Tool;
 
-final class HttpFetchTool implements Tool
+class HttpFetchTool implements Tool
 {
-    public function __construct(private HttpClient $http) {}
+    public function __construct(protected HttpClient $http) {}
 
     public function name(): string
     {

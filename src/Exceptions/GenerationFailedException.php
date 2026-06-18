@@ -7,7 +7,7 @@ namespace Kevariable\PhpclawLaravel\Exceptions;
 use RuntimeException;
 use Throwable;
 
-final class GenerationFailedException extends RuntimeException
+class GenerationFailedException extends RuntimeException
 {
     public static function allCandidatesFailed(string $role, ?Throwable $previous = null): self
     {

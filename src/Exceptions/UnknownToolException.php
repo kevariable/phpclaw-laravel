@@ -6,7 +6,7 @@ namespace Kevariable\PhpclawLaravel\Exceptions;
 
 use InvalidArgumentException;
 
-final class UnknownToolException extends InvalidArgumentException
+class UnknownToolException extends InvalidArgumentException
 {
     public static function for(string $name): self
     {
