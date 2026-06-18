@@ -6,6 +6,7 @@ use Kevariable\PhpclawLaravel\Exceptions\PathNotAllowedException;
 use Kevariable\PhpclawLaravel\Tools\CodeSymbolsTool;
 use Kevariable\PhpclawLaravel\Tools\DirListTool;
 use Kevariable\PhpclawLaravel\Tools\FileReadTool;
+use Kevariable\PhpclawLaravel\Tools\GrepSearchTool;
 use Kevariable\PhpclawLaravel\Tools\ProjectDetectTool;
 
 it('reads a file inside the root (happy path)', function () {
@@ -53,6 +54,25 @@ it('lists directory entries (happy path)', function () {
 
     $files->deleteDirectory($root);
 });
+
+it('blocks path traversal on every filesystem tool (sad path)', function (string $tool) {
+    [$files, $paths, $root] = phpclawFsFixture();
+
+    $instance = new $tool($files, $paths);
+
+    $arguments = $tool === GrepSearchTool::class
+        ? ['query' => 'x', 'path' => '../etc']
+        : ['path' => '../etc'];
+
+    expect(fn () => $instance->run($arguments))->toThrow(PathNotAllowedException::class);
+
+    $files->deleteDirectory($root);
+})->with([
+    DirListTool::class,
+    GrepSearchTool::class,
+    ProjectDetectTool::class,
+    CodeSymbolsTool::class,
+]);
 
 it('detects laravel, composer and node projects (happy path)', function () {
     [$files, $paths, $root] = phpclawFsFixture();
