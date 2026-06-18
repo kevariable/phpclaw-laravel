@@ -96,6 +96,19 @@ final class WeatherTool implements Tool
 
 ## Testing
 
+This package targets PHP 8.4 (on Laravel 13, Symfony 8 requires PHP >= 8.4.1). If your host PHP is older, use the bundled Docker setup so the toolchain is pinned:
+
+```bash
+make build      # build the PHP 8.4 image
+make test       # run the Pest suite
+make coverage   # run with coverage (fails under 95%)
+make analyse    # PHPStan (level 5 + Larastan)
+make format     # Pint
+make shell      # drop into the container
+```
+
+Or natively, with PHP 8.4 available:
+
 ```bash
 composer test
 composer analyse
