@@ -10,6 +10,8 @@
 
 A role-routed, tool-using AI agent core for Laravel, built on the [Laravel AI SDK](https://github.com/laravel/ai). Inspired by [PHPClaw](https://github.com/vilanobeachflorida/phpclaw), rebuilt the Laravel way: SOLID, CQRS, and a driver port so the whole agent layer is testable without ever calling a model.
 
+Full docs live in [docs/](docs/) — [architecture](docs/architecture.md), [routing](docs/routing.md), [tools](docs/tools.md), [modules](docs/modules.md), [commands](docs/commands.md), [browser control](docs/browser.md), [development](docs/development.md).
+
 ## What it gives you
 
 - **Role-based model routing with fallback** — map a task role (`reasoning`, `fast`, `coding`) to a primary model and an ordered fallback chain. If a model errors or rate-limits, the runner fails over to the next candidate.
