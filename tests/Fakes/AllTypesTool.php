@@ -18,9 +18,6 @@ final class AllTypesTool implements Tool
         return 'A tool exercising every supported parameter type.';
     }
 
-    /**
-     * @return array<string, array{type: string, description?: string, required?: bool}>
-     */
     public function parameters(): array
     {
         return [
@@ -33,9 +30,6 @@ final class AllTypesTool implements Tool
         ];
     }
 
-    /**
-     * @param  array<string, mixed>  $arguments
-     */
     public function run(array $arguments): string
     {
         return 'ran';

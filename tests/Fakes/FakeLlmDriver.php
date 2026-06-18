@@ -11,14 +11,8 @@ use RuntimeException;
 
 final class FakeLlmDriver implements LlmDriver
 {
-    /**
-     * @var list<GenerationRequest>
-     */
     public array $requests = [];
 
-    /**
-     * @param  list<string>  $failModels
-     */
     public function __construct(
         private array $failModels = [],
         private string $text = 'ok',

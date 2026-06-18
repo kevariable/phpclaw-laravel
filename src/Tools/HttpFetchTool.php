@@ -33,7 +33,7 @@ final class HttpFetchTool implements Tool
     {
         $url = (string) ($arguments['url'] ?? '');
 
-        if ($url === '') {
+        if (blank($url)) {
             throw new InvalidArgumentException('A non-empty url argument is required.');
         }
 
