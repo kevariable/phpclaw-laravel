@@ -55,4 +55,11 @@ return [
         ListToolsQuery::class => ListToolsHandler::class,
     ],
 
+    'browser' => [
+        'token' => env('PHPCLAW_BROWSER_TOKEN', ''),
+        'await_attempts' => 240,
+        'poll_interval_ms' => 250,
+        'connected_ttl' => 10,
+    ],
+
 ];

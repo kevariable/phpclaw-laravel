@@ -6,11 +6,13 @@ namespace Kevariable\PhpclawLaravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use Kevariable\PhpclawLaravel\Agent\AgentRunner;
+use Kevariable\PhpclawLaravel\Browser\CacheBrowserBridge;
 use Kevariable\PhpclawLaravel\Bus\ContainerCommandBus;
 use Kevariable\PhpclawLaravel\Console\ChatCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
+use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
@@ -27,12 +29,20 @@ class PhpclawServiceProvider extends PackageServiceProvider
         $package
             ->name('phpclaw-laravel')
             ->hasConfigFile('phpclaw')
+            ->hasRoute('phpclaw')
             ->hasCommands([
                 RunCommand::class,
                 RolesCommand::class,
                 ToolsCommand::class,
                 ChatCommand::class,
             ]);
+    }
+
+    public function packageBooted(): void
+    {
+        $this->publishes([
+            __DIR__.'/../resources/extension' => base_path('phpclaw-extension'),
+        ], 'phpclaw-extension');
     }
 
     public function packageRegistered(): void
@@ -71,5 +81,16 @@ class PhpclawServiceProvider extends PackageServiceProvider
         $this->app->singleton(Phpclaw::class, fn (Application $app): Phpclaw => new Phpclaw(
             $app->make(CommandBus::class),
         ));
+
+        $this->app->singleton(BrowserBridge::class, function (Application $app): BrowserBridge {
+            $config = (array) $app['config']->get('phpclaw.browser', []);
+
+            return new CacheBrowserBridge(
+                $app['cache']->store(),
+                (int) ($config['await_attempts'] ?? 240),
+                (int) ($config['poll_interval_ms'] ?? 250) * 1000,
+                (int) ($config['connected_ttl'] ?? 10),
+            );
+        });
     }
 }

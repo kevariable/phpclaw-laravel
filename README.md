@@ -105,6 +105,38 @@ final class WeatherTool implements Tool
 }
 ```
 
+## Browser control (Chrome extension)
+
+The package ships a Chrome extension and a `browser_control` tool so the agent can drive a real, logged-in browser (navigate, click, type, read), like PHPClaw's browser control.
+
+How it fits together: the agent's `browser_control` tool enqueues a command on a cache-backed `BrowserBridge` and blocks until a result arrives. The Chrome extension polls the package's HTTP routes for pending commands, runs them in the page, and posts the result back.
+
+Setup:
+
+```bash
+# 1. Set a shared token (the extension authenticates with it)
+#    .env
+PHPCLAW_BROWSER_TOKEN=some-long-random-string
+
+# 2. Publish the extension, then load it unpacked in chrome://extensions
+php artisan vendor:publish --tag="phpclaw-extension"   # -> base_path('phpclaw-extension')
+
+# 3. In the extension popup, set the server URL (e.g. http://localhost:8000) and the token above.
+
+# 4. Add the tool to config/phpclaw.php 'tools' (it is opt-in because it needs the extension):
+#    Kevariable\PhpclawLaravel\Tools\BrowserControlTool::class
+```
+
+Routes registered by the package (token-guarded via `Authorization: Bearer <token>`):
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/phpclaw/browser/pending` | extension polls for the next command |
+| POST | `/phpclaw/browser/result` | extension posts a command result |
+| GET | `/phpclaw/browser/status` | connection status |
+
+Config (`phpclaw.browser`): `token`, `await_attempts`, `poll_interval_ms`, `connected_ttl`.
+
 ## Testing
 
 This package targets PHP 8.4 (on Laravel 13, Symfony 8 requires PHP >= 8.4.1). If your host PHP is older, use the bundled Docker setup so the toolchain is pinned:

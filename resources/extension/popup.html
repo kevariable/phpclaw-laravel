@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 16px;
+      color: #00d4ff;
+      margin-bottom: 12px;
+    }
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.3s, color 0.3s;
+    }
+    .status-bar.connected { background: rgba(0, 212, 100, 0.15); color: #00d464; }
+    .status-bar.disconnected { background: rgba(255, 70, 70, 0.15); color: #ff4646; }
+    .status-bar.connecting { background: rgba(255, 165, 0, 0.15); color: #FFA500; }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .connected .dot { background: #00d464; box-shadow: 0 0 8px #00d464; }
+    .disconnected .dot { background: #ff4646; }
+    .connecting .dot {
+      background: #FFA500;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .status-detail {
+      font-size: 11px;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+    .status-detail.error { color: #ff6060; }
+    .controlled-tab {
+      font-size: 11px;
+      color: #00d4ff;
+      background: rgba(0, 212, 255, 0.08);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-bottom: 12px;
+      display: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .controlled-tab.visible { display: block; }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: #0f0f23;
+      color: #e0e0e0;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    input:focus { outline: none; border-color: #00d4ff; }
+    input:disabled { opacity: 0.5; }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-connect { background: #00d464; color: #000; }
+    .btn-connect:hover { background: #00ff78; }
+    .btn-disconnect { background: #ff4646; color: #fff; }
+    .btn-disconnect:hover { background: #ff6060; }
+    .footer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #555;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>PHPClaw</h1>
+
+  <div id="statusBar" class="status-bar disconnected">
+    <span class="dot"></span>
+    <span id="statusText">Disconnected</span>
+  </div>
+  <div id="statusDetail" class="status-detail"></div>
+  <div id="controlledTab" class="controlled-tab"></div>
+
+  <label>Server URL</label>
+  <input type="text" id="serverUrl" placeholder="http://localhost:8000">
+
+  <label>API Token</label>
+  <input type="password" id="apiToken" placeholder="Bearer token (optional)">
+
+  <button id="toggleBtn" class="btn-connect">Connect</button>
+
+  <div class="footer">Browser Control Extension v1.0</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
