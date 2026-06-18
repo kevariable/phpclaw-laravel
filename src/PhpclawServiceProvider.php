@@ -9,9 +9,12 @@ use Kevariable\PhpclawLaravel\Agent\AgentRunner;
 use Kevariable\PhpclawLaravel\Browser\CacheBrowserBridge;
 use Kevariable\PhpclawLaravel\Bus\ContainerCommandBus;
 use Kevariable\PhpclawLaravel\Console\ChatCommand;
+use Kevariable\PhpclawLaravel\Console\MakeToolCommand;
 use Kevariable\PhpclawLaravel\Console\MemoryCompactCommand;
 use Kevariable\PhpclawLaravel\Console\MemoryShowCommand;
+use Kevariable\PhpclawLaravel\Console\ModelsCommand;
 use Kevariable\PhpclawLaravel\Console\ModulesCommand;
+use Kevariable\PhpclawLaravel\Console\ProvidersCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
 use Kevariable\PhpclawLaravel\Console\SessionsCommand;
@@ -20,6 +23,7 @@ use Kevariable\PhpclawLaravel\Console\StatusCommand;
 use Kevariable\PhpclawLaravel\Console\TasksCommand;
 use Kevariable\PhpclawLaravel\Console\TaskShowCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
+use Kevariable\PhpclawLaravel\Console\ToolsTestCommand;
 use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
@@ -50,8 +54,12 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 RunCommand::class,
                 RolesCommand::class,
                 ToolsCommand::class,
+                ToolsTestCommand::class,
                 ModulesCommand::class,
+                ProvidersCommand::class,
+                ModelsCommand::class,
                 StatusCommand::class,
+                MakeToolCommand::class,
                 SessionsCommand::class,
                 SessionShowCommand::class,
                 MemoryShowCommand::class,
