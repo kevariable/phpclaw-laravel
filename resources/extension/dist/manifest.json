@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PHPClaw for Laravel — Browser Control",
   "version": "0.2.0",
-  "description": "Allows PHPClaw AI agent to control Chrome as if it were the user",
+  "description": "Allows the PHPClaw agent to control Chrome as if it were the user.",
   "permissions": [
     "activeTab",
     "tabs",
@@ -17,12 +17,17 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "service-worker-loader.js",
+    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": [
+        "assets/content.ts-B8NBEhki.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -38,5 +43,16 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "assets/content.ts-B8NBEhki.js"
+      ],
+      "use_dynamic_url": false
+    }
+  ]
 }

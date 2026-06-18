@@ -45,7 +45,7 @@ class PhpclawServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         $this->publishes([
-            __DIR__.'/../resources/extension' => base_path('phpclaw-extension'),
+            __DIR__.'/../resources/extension/dist' => base_path('phpclaw-extension'),
         ], 'phpclaw-extension');
     }
 
