@@ -14,15 +14,19 @@ use Kevariable\PhpclawLaravel\Bus\Queries\ListToolsHandler;
 use Kevariable\PhpclawLaravel\Bus\Queries\ListToolsQuery;
 use Kevariable\PhpclawLaravel\Tools\CalculatorTool;
 use Kevariable\PhpclawLaravel\Tools\CodeSymbolsTool;
+use Kevariable\PhpclawLaravel\Tools\DbQueryTool;
 use Kevariable\PhpclawLaravel\Tools\DeleteFileTool;
 use Kevariable\PhpclawLaravel\Tools\DirListTool;
+use Kevariable\PhpclawLaravel\Tools\FileAppendTool;
 use Kevariable\PhpclawLaravel\Tools\FileReadTool;
 use Kevariable\PhpclawLaravel\Tools\FileWriteTool;
 use Kevariable\PhpclawLaravel\Tools\GrepSearchTool;
 use Kevariable\PhpclawLaravel\Tools\HttpFetchTool;
 use Kevariable\PhpclawLaravel\Tools\HttpRequestTool;
+use Kevariable\PhpclawLaravel\Tools\MakeDirectoryTool;
 use Kevariable\PhpclawLaravel\Tools\MemoryReadTool;
 use Kevariable\PhpclawLaravel\Tools\MemoryWriteTool;
+use Kevariable\PhpclawLaravel\Tools\MoveFileTool;
 use Kevariable\PhpclawLaravel\Tools\ProjectDetectTool;
 use Kevariable\PhpclawLaravel\Tools\ShellExecTool;
 use Kevariable\PhpclawLaravel\Tools\SystemInfoTool;
@@ -76,7 +80,11 @@ return [
         MemoryReadTool::class,
         ShellExecTool::class,
         FileWriteTool::class,
+        FileAppendTool::class,
         DeleteFileTool::class,
+        MakeDirectoryTool::class,
+        MoveFileTool::class,
+        DbQueryTool::class,
     ],
 
     'memory' => [

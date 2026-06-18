@@ -34,7 +34,17 @@ File tools resolve paths through `Support\PathResolver`, which rejects `..` trav
 
 ## Dangerous tools — shipped, but guarded
 
-`shell_exec`, `file_write`, and `delete_file` ship in the default tool set, but every one calls `DangerousTools::guard()` before doing anything. You can lock them down with a single static call — the same idea as Laravel's `DB::prohibitDestructiveCommands()`:
+These ship in the default tool set, but every one calls `DangerousTools::guard()` before doing anything:
+
+| Tool | Purpose |
+|---|---|
+| `shell_exec` | Run a shell command |
+| `file_write` | Write a file |
+| `file_append` | Append to a file |
+| `delete_file` | Delete a file |
+| `mkdir` | Create a directory |
+| `move_file` | Move/rename a file |
+| `db_query` | Run a read-only SQL SELECT | You can lock them down with a single static call — the same idea as Laravel's `DB::prohibitDestructiveCommands()`:
 
 ```php
 use Kevariable\PhpclawLaravel\DangerousTools;
