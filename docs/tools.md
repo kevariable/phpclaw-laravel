@@ -32,9 +32,22 @@ The `LaravelAiToolAdapter` translates `parameters()` into the Laravel AI SDK's J
 
 File tools resolve paths through `Support\PathResolver`, which rejects `..` traversal and scopes everything to `phpclaw.tools_root` (defaults to `base_path()`).
 
-## Risky tools — opt-in only
+## Dangerous tools — shipped, but guarded
 
-Shell execution, process control, raw DB queries, and destructive filesystem writes/deletes are **not** shipped. They are powerful for a self-hosted agent but dangerous in a published package. To use them, implement the `Tool` contract yourself and add the class to `phpclaw.tools`. See [SECURITY.md](../SECURITY.md).
+`shell_exec`, `file_write`, and `delete_file` ship in the default tool set, but every one calls `DangerousTools::guard()` before doing anything. You can lock them down with a single static call — the same idea as Laravel's `DB::prohibitDestructiveCommands()`:
+
+```php
+use Kevariable\PhpclawLaravel\DangerousTools;
+
+DangerousTools::prohibit();   // any dangerous tool now throws DangerousToolsProhibitedException
+DangerousTools::allow();      // re-enable (the default)
+
+// Facade convenience:
+use Kevariable\PhpclawLaravel\Facades\Phpclaw;
+Phpclaw::prohibitDangerousTools();   // e.g. in production
+```
+
+They are allowed by default (like migration prohibition). Call `prohibit()` — typically in a production service provider — to disable them. File tools remain path-scoped via `PathResolver`. See [SECURITY.md](../SECURITY.md).
 
 ## Adding a tool
 
