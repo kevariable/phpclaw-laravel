@@ -19,6 +19,8 @@ use Kevariable\PhpclawLaravel\Tools\FileReadTool;
 use Kevariable\PhpclawLaravel\Tools\GrepSearchTool;
 use Kevariable\PhpclawLaravel\Tools\HttpFetchTool;
 use Kevariable\PhpclawLaravel\Tools\HttpRequestTool;
+use Kevariable\PhpclawLaravel\Tools\MemoryReadTool;
+use Kevariable\PhpclawLaravel\Tools\MemoryWriteTool;
 use Kevariable\PhpclawLaravel\Tools\ProjectDetectTool;
 use Kevariable\PhpclawLaravel\Tools\SystemInfoTool;
 
@@ -67,6 +69,12 @@ return [
         SystemInfoTool::class,
         ProjectDetectTool::class,
         CodeSymbolsTool::class,
+        MemoryWriteTool::class,
+        MemoryReadTool::class,
+    ],
+
+    'memory' => [
+        'max_notes' => 50,
     ],
 
     'modules' => [

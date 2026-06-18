@@ -9,6 +9,8 @@ use Kevariable\PhpclawLaravel\Agent\AgentRunner;
 use Kevariable\PhpclawLaravel\Browser\CacheBrowserBridge;
 use Kevariable\PhpclawLaravel\Bus\ContainerCommandBus;
 use Kevariable\PhpclawLaravel\Console\ChatCommand;
+use Kevariable\PhpclawLaravel\Console\MemoryCompactCommand;
+use Kevariable\PhpclawLaravel\Console\MemoryShowCommand;
 use Kevariable\PhpclawLaravel\Console\ModulesCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
@@ -19,9 +21,11 @@ use Kevariable\PhpclawLaravel\Console\ToolsCommand;
 use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
+use Kevariable\PhpclawLaravel\Contracts\MemoryStore;
 use Kevariable\PhpclawLaravel\Contracts\SessionStore;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Drivers\LaravelAiDriver;
+use Kevariable\PhpclawLaravel\Memory\CacheMemoryStore;
 use Kevariable\PhpclawLaravel\Routing\ModuleRegistry;
 use Kevariable\PhpclawLaravel\Routing\RoleRouter;
 use Kevariable\PhpclawLaravel\Sessions\CacheSessionStore;
@@ -46,6 +50,8 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 StatusCommand::class,
                 SessionsCommand::class,
                 SessionShowCommand::class,
+                MemoryShowCommand::class,
+                MemoryCompactCommand::class,
                 ChatCommand::class,
             ]);
     }
@@ -105,6 +111,10 @@ class PhpclawServiceProvider extends PackageServiceProvider
         ));
 
         $this->app->singleton(SessionStore::class, fn (Application $app): SessionStore => new CacheSessionStore(
+            $app['cache']->store(),
+        ));
+
+        $this->app->singleton(MemoryStore::class, fn (Application $app): MemoryStore => new CacheMemoryStore(
             $app['cache']->store(),
         ));
 

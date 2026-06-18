@@ -36,7 +36,7 @@ it('lists roles, tools and modules from the published config', function () {
 
     expect($manager->roles())->toHaveCount(3)
         ->and($manager->roles()[0])->toBeInstanceOf(RoleDefinition::class)
-        ->and($manager->tools())->toHaveCount(9)
+        ->and($manager->tools())->toHaveCount(11)
         ->and($manager->tools()[0])->toBeInstanceOf(Tool::class)
         ->and($manager->modules())->toHaveCount(4)
         ->and($manager->modules()[0])->toBeInstanceOf(ModuleDefinition::class);
