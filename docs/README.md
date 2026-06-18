@@ -5,8 +5,11 @@ A role-routed, tool-using AI agent core for Laravel, built on the Laravel AI SDK
 | Doc | What it covers |
 |---|---|
 | [architecture.md](architecture.md) | The big picture: the `LlmDriver` port, CQRS bus, data flow |
+| [configuration.md](configuration.md) | Every `config/phpclaw.php` key + env vars + bindings |
 | [routing.md](routing.md) | Roles → model + fallback chain |
-| [tools.md](tools.md) | The tool suite, the `Tool` contract, adding your own, risky tools |
+| [drivers.md](drivers.md) | The `LlmDriver` port, the Laravel AI driver, writing your own |
+| [cqrs.md](cqrs.md) | The command/query bus, handlers, adding a command |
+| [tools.md](tools.md) | The tool suite, the `Tool` contract, adding your own, dangerous tools |
 | [modules.md](modules.md) | Modules / tool-router (per-task tool whitelists) |
 | [sessions.md](sessions.md) | Persisted chat transcripts |
 | [memory.md](memory.md) | Long-term memory notes + compaction |

@@ -8,33 +8,41 @@
 [![run-tests](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml)
 [![PHPStan](https://github.com/kevariable/phpclaw-laravel/actions/workflows/phpstan.yml/badge.svg)](https://github.com/kevariable/phpclaw-laravel/actions/workflows/phpstan.yml)
 
-A role-routed, tool-using AI agent core for Laravel, built on the [Laravel AI SDK](https://github.com/laravel/ai). Inspired by [PHPClaw](https://github.com/vilanobeachflorida/phpclaw), rebuilt the Laravel way: SOLID, CQRS, and a driver port so the whole agent layer is testable without ever calling a model.
+A role-routed, tool-using AI agent platform for Laravel, built on the [Laravel AI SDK](https://github.com/laravel/ai). Inspired by [PHPClaw](https://github.com/vilanobeachflorida/phpclaw), rebuilt the Laravel way: SOLID, CQRS, and a driver port so the whole agent layer is testable without ever calling a model.
 
-Full docs live in [docs/](docs/) — [architecture](docs/architecture.md), [routing](docs/routing.md), [tools](docs/tools.md), [modules](docs/modules.md), [commands](docs/commands.md), [browser control](docs/browser.md), [development](docs/development.md).
+Full docs in [docs/](docs/): [architecture](docs/architecture.md) · [routing](docs/routing.md) · [tools](docs/tools.md) · [modules](docs/modules.md) · [sessions](docs/sessions.md) · [memory](docs/memory.md) · [tasks](docs/tasks.md) · [REST API](docs/api.md) · [commands](docs/commands.md) · [browser control](docs/browser.md) · [development](docs/development.md).
 
 ## What it gives you
 
-- **Role-based model routing with fallback** — map a task role (`reasoning`, `fast`, `coding`) to a primary model and an ordered fallback chain. If a model errors or rate-limits, the runner fails over to the next candidate.
-- **Tool-using agents** — register tools once; they are handed to the model through the Laravel AI SDK's function-calling.
-- **CQRS bus** — every action is a `Command`/`Query` dispatched through a container-backed bus to a dedicated handler.
-- **A driver port (`LlmDriver`)** — the core depends on an interface, not on the SDK. The shipped `LaravelAiDriver` is the only class that touches `laravel/ai`, so the routing, agent and bus layers are unit-tested with a fake driver.
+- **Role-based model routing with fallback** — a role maps to a primary model and an ordered fallback chain; the runner fails over when a model errors or rate-limits.
+- **Tools** — 14 shipped (calculator, http, filesystem-read, grep, system/project/code analysis, memory) handed to the model via the Laravel AI SDK's function-calling. Add your own by implementing one interface.
+- **Modules / tool-router** — per-task tool whitelists (`reasoning`, `coding`, `research`, …) bundling a role + the tools that task may use.
+- **Sessions** — persisted chat transcripts that carry context across turns.
+- **Memory** — long-term notes the agent can write and recall, with compaction.
+- **Queued tasks** — run the agent in the background on Laravel's queue.
+- **REST API** — a token-guarded `POST /phpclaw/chat` endpoint.
+- **Browser control** — a bundled (TypeScript) Chrome extension lets the agent drive a real browser.
+- **Dangerous tools, guarded** — `shell_exec` / `file_write` / `delete_file` ship behind a static prohibition guard (like `DB::prohibitDestructiveCommands()`).
+- **CQRS bus** — every action is a `Command`/`Query` dispatched to a dedicated handler.
+- **A driver port (`LlmDriver`)** — the core depends on an interface; `laravel/ai` is one (optional) driver, so the whole stack is unit-tested with a fake driver.
 
 ## Installation
 
 ```bash
 composer require kevariable/phpclaw-laravel
-```
-
-Publish the config:
-
-```bash
 php artisan vendor:publish --tag="phpclaw-laravel-config"
 ```
 
-Configure the Laravel AI SDK's Gemini provider (see the SDK docs), then set:
+For the built-in Gemini driver, also install the Laravel AI SDK (needs Laravel 12.62+ or 13) and set your key — or bind your own `LlmDriver` and skip it:
+
+```bash
+composer require laravel/ai
+```
 
 ```dotenv
 GEMINI_API_KEY=your-key
+PHPCLAW_API_TOKEN=a-long-random-string      # for the REST API
+PHPCLAW_BROWSER_TOKEN=a-long-random-string  # for the browser extension
 ```
 
 ## Usage
@@ -43,24 +51,21 @@ GEMINI_API_KEY=your-key
 use Kevariable\PhpclawLaravel\Facades\Phpclaw;
 use Kevariable\PhpclawLaravel\Tools\CalculatorTool;
 
-$result = Phpclaw::run(
-    role: 'reasoning',
-    prompt: 'What is 19 * 23? Use the calculator.',
-    tools: [new CalculatorTool()],
-);
+// Run by role
+$result = Phpclaw::run('reasoning', 'What is 19 * 23?', tools: [new CalculatorTool]);
+echo $result->text;    // model output
+echo $result->model;   // the model that actually answered (after any fallback)
 
-echo $result->text;   // model output
-echo $result->model;  // the model that actually answered (after any fallback)
+// Run by module (uses the module's role + its tool whitelist)
+Phpclaw::runModule('coding', 'Find where the bus is bound and explain it.');
+
+// Inspect configuration
+Phpclaw::roles();      // list<RoleDefinition>
+Phpclaw::tools();      // list<Tool>
+Phpclaw::modules();    // list<ModuleDefinition>
 ```
 
-Inspect configured roles and tools:
-
-```php
-Phpclaw::roles();  // list<RoleDefinition>
-Phpclaw::tools();  // list<Tool>
-```
-
-### Roles
+### Roles & modules
 
 `config/phpclaw.php`:
 
@@ -70,99 +75,107 @@ Phpclaw::tools();  // list<Tool>
         'provider' => 'gemini',
         'model' => 'gemini-2.5-flash',
         'timeout' => 120,
-        'fallback' => [
-            ['provider' => 'gemini', 'model' => 'gemini-2.5-flash-lite'],
-        ],
+        'fallback' => [['provider' => 'gemini', 'model' => 'gemini-2.5-flash-lite']],
     ],
+],
+
+'modules' => [
+    'coding' => ['role' => 'coding', 'tools' => ['file_read', 'dir_list', 'grep_search', 'code_symbols']],
 ],
 ```
 
-### Artisan commands
-
-```bash
-php artisan phpclaw:run reasoning "Summarise the CAP theorem in one sentence."
-php artisan phpclaw:roles      # table of roles -> provider, model, fallbacks
-php artisan phpclaw:tools      # table of registered tools
-php artisan phpclaw:chat --role=reasoning   # interactive REPL; type 'exit' to quit
-```
-
-`phpclaw:run` exits non-zero on an unknown role or when every model candidate fails. `phpclaw:chat` keeps the session going on per-turn errors and only stops on `exit`/`quit`/empty input.
-
 ### Custom tools
 
-Implement `Kevariable\PhpclawLaravel\Contracts\Tool` and add the class to `phpclaw.tools`.
+Implement `Kevariable\PhpclawLaravel\Contracts\Tool` and add the class to `phpclaw.tools` (or scaffold one with `php artisan make:phpclaw-tool WeatherTool`):
 
 ```php
-final class WeatherTool implements Tool
+class WeatherTool implements Tool
 {
     public function name(): string { return 'weather'; }
-
     public function description(): string { return 'Get the weather for a city.'; }
-
     public function parameters(): array
     {
         return ['city' => ['type' => 'string', 'description' => 'City name.', 'required' => true]];
     }
-
-    public function run(array $arguments): string
-    {
-        return "Sunny in {$arguments['city']}.";
-    }
+    public function run(array $arguments): string { return "Sunny in {$arguments['city']}."; }
 }
 ```
 
-## Browser control (Chrome extension)
+### Dangerous tools
 
-The package ships a Chrome extension and a `browser_control` tool so the agent can drive a real, logged-in browser (navigate, click, type, read), like PHPClaw's browser control.
+`shell_exec`, `file_write`, and `delete_file` are shipped but every call is gated. Lock them down with one static call (e.g. in a production service provider):
 
-How it fits together: the agent's `browser_control` tool enqueues a command on a cache-backed `BrowserBridge` and blocks until a result arrives. The Chrome extension polls the package's HTTP routes for pending commands, runs them in the page, and posts the result back.
+```php
+use Kevariable\PhpclawLaravel\DangerousTools;
 
-Setup:
+DangerousTools::prohibit();   // any dangerous tool now throws DangerousToolsProhibitedException
+DangerousTools::allow();      // re-enable (the default)
 
-```bash
-# 1. Set a shared token (the extension authenticates with it)
-#    .env
-PHPCLAW_BROWSER_TOKEN=some-long-random-string
-
-# 2. Publish the extension, then load it unpacked in chrome://extensions
-php artisan vendor:publish --tag="phpclaw-extension"   # -> base_path('phpclaw-extension')
-
-# 3. In the extension popup, set the server URL (e.g. http://localhost:8000) and the token above.
-
-# 4. Add the tool to config/phpclaw.php 'tools' (it is opt-in because it needs the extension):
-#    Kevariable\PhpclawLaravel\Tools\BrowserControlTool::class
+// or via the facade:
+Phpclaw::prohibitDangerousTools();
 ```
 
-Routes registered by the package (token-guarded via `Authorization: Bearer <token>`):
+### Sessions, memory & queued tasks
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/phpclaw/browser/pending` | extension polls for the next command |
-| POST | `/phpclaw/browser/result` | extension posts a command result |
-| GET | `/phpclaw/browser/status` | connection status |
+```php
+Phpclaw::run('reasoning', 'long job…');   // synchronous
 
-Config (`phpclaw.browser`): `token`, `await_attempts`, `poll_interval_ms`, `connected_ttl`.
+// Background (queued) — see docs/tasks.md
+php artisan phpclaw:run reasoning "long job…" --queue
+```
+
+## Artisan commands
+
+| Command | Purpose |
+|---|---|
+| `phpclaw:run {role} {prompt}` | One-shot generation (`--queue` to background it) |
+| `phpclaw:chat` | Interactive REPL (`--role`, `--module`, `--session`) |
+| `phpclaw:roles` / `:providers` / `:models` | Inspect roles, providers, models |
+| `phpclaw:tools` / `:tools:test` | List / smoke-test tools |
+| `phpclaw:modules` | List modules |
+| `phpclaw:status` | Config summary |
+| `phpclaw:sessions` / `:session:show {id}` | Chat sessions |
+| `phpclaw:memory:show` / `:memory:compact` | Long-term memory |
+| `phpclaw:tasks` / `:task:show {id}` | Queued tasks |
+| `make:phpclaw-tool {name}` | Generate a tool stub |
+
+See [docs/commands.md](docs/commands.md) for the full reference.
+
+## REST API
+
+```bash
+curl -X POST http://localhost:8000/phpclaw/chat \
+  -H "Authorization: Bearer $PHPCLAW_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Explain CQRS in one sentence.","module":"reasoning"}'
+# => {"response":"…","model":"gemini-2.5-flash"}
+```
+
+See [docs/api.md](docs/api.md).
+
+## Browser control
+
+A bundled TypeScript Chrome extension lets the agent drive a real browser. Publish the built extension, load it unpacked, and add the `BrowserControlTool`:
+
+```bash
+php artisan vendor:publish --tag="phpclaw-extension"   # -> base_path('phpclaw-extension')
+```
+
+See [docs/browser.md](docs/browser.md) for the full setup and the extension's TypeScript build.
 
 ## Testing
 
-This package targets PHP 8.4 (on Laravel 13, Symfony 8 requires PHP >= 8.4.1). If your host PHP is older, use the bundled Docker setup so the toolchain is pinned:
+Targets PHP 8.4 (Laravel 13 pulls Symfony 8, which needs PHP >= 8.4.1). The bundled Docker image pins it:
 
 ```bash
 make build      # build the PHP 8.4 image
-make test       # run the Pest suite
-make coverage   # run with coverage (fails under 95%)
+make test       # Pest suite
+make coverage   # coverage (100%)
 make analyse    # PHPStan (level 5 + Larastan)
 make format     # Pint
-make shell      # drop into the container
 ```
 
-Or natively, with PHP 8.4 available:
-
-```bash
-composer test
-composer analyse
-composer format
-```
+Natively, with PHP 8.4: `composer test` / `composer analyse` / `composer format`. See [docs/development.md](docs/development.md).
 
 ## License
 
