@@ -41,3 +41,13 @@ it('honours a custom --role option (other path)', function () {
         ->expectsQuestion('you', 'exit')
         ->assertSuccessful();
 });
+
+it('runs through a module when --module is given (other path)', function () {
+    $this->app->instance(LlmDriver::class, new FakeLlmDriver(text: 'module-reply'));
+
+    $this->artisan('phpclaw:chat', ['--module' => 'coding'])
+        ->expectsQuestion('you', 'refactor this')
+        ->expectsOutput('module-reply')
+        ->expectsQuestion('you', 'exit')
+        ->assertSuccessful();
+});

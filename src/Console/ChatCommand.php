@@ -10,15 +10,17 @@ use Throwable;
 
 class ChatCommand extends Command
 {
-    protected $signature = 'phpclaw:chat {--role=reasoning}';
+    protected $signature = 'phpclaw:chat {--role=reasoning} {--module=}';
 
     protected $description = 'Start an interactive chat session with the agent.';
 
     public function handle(Phpclaw $phpclaw): int
     {
         $role = (string) $this->option('role');
+        $module = (string) $this->option('module');
+        $label = $module !== '' ? "module [{$module}]" : "role [{$role}]";
 
-        $this->components->info("PHPClaw chat using role [{$role}]. Type 'exit' to quit.");
+        $this->components->info("PHPClaw chat using {$label}. Type 'exit' to quit.");
 
         while (true) {
             $prompt = trim((string) $this->ask('you'));
@@ -30,7 +32,11 @@ class ChatCommand extends Command
             }
 
             try {
-                $this->line($phpclaw->run($role, $prompt)->text);
+                $result = $module !== ''
+                    ? $phpclaw->runModule($module, $prompt)
+                    : $phpclaw->run($role, $prompt);
+
+                $this->line($result->text);
             } catch (Throwable $e) {
                 $this->components->error($e->getMessage());
             }

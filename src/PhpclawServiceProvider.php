@@ -9,6 +9,7 @@ use Kevariable\PhpclawLaravel\Agent\AgentRunner;
 use Kevariable\PhpclawLaravel\Browser\CacheBrowserBridge;
 use Kevariable\PhpclawLaravel\Bus\ContainerCommandBus;
 use Kevariable\PhpclawLaravel\Console\ChatCommand;
+use Kevariable\PhpclawLaravel\Console\ModulesCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
@@ -17,7 +18,9 @@ use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Drivers\LaravelAiDriver;
+use Kevariable\PhpclawLaravel\Routing\ModuleRegistry;
 use Kevariable\PhpclawLaravel\Routing\RoleRouter;
+use Kevariable\PhpclawLaravel\Support\PathResolver;
 use Kevariable\PhpclawLaravel\Tools\ArrayToolRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -34,6 +37,7 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 RunCommand::class,
                 RolesCommand::class,
                 ToolsCommand::class,
+                ModulesCommand::class,
                 ChatCommand::class,
             ]);
     }
@@ -55,6 +59,10 @@ class PhpclawServiceProvider extends PackageServiceProvider
             return new RoleRouter($roles);
         });
 
+        $this->app->singleton(PathResolver::class, fn (Application $app): PathResolver => new PathResolver(
+            (string) ($app['config']->get('phpclaw.tools_root') ?: base_path()),
+        ));
+
         $this->app->singleton(ToolRegistry::class, function (Application $app): ToolRegistry {
             $registry = new ArrayToolRegistry;
 
@@ -65,6 +73,12 @@ class PhpclawServiceProvider extends PackageServiceProvider
             }
 
             return $registry;
+        });
+
+        $this->app->singleton(ModuleRegistry::class, function (Application $app): ModuleRegistry {
+            $modules = (array) $app['config']->get('phpclaw.modules', []);
+
+            return new ModuleRegistry($modules, $app->make(ToolRegistry::class));
         });
 
         $this->app->singleton(AgentRunner::class, fn (Application $app): AgentRunner => new AgentRunner(

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kevariable\PhpclawLaravel;
 
 use Kevariable\PhpclawLaravel\Bus\Commands\RunAgentCommand;
+use Kevariable\PhpclawLaravel\Bus\Commands\RunModuleCommand;
+use Kevariable\PhpclawLaravel\Bus\Queries\ListModulesQuery;
 use Kevariable\PhpclawLaravel\Bus\Queries\ListRolesQuery;
 use Kevariable\PhpclawLaravel\Bus\Queries\ListToolsQuery;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
@@ -22,6 +24,16 @@ readonly class Phpclaw
         array $messages = [],
     ): GenerationResult {
         return $this->dispatch(new RunAgentCommand($role, $prompt, $tools, $instructions, $messages));
+    }
+
+    public function runModule(string $module, string $prompt, array $messages = []): GenerationResult
+    {
+        return $this->dispatch(new RunModuleCommand($module, $prompt, $messages));
+    }
+
+    public function modules(): array
+    {
+        return $this->dispatch(new ListModulesQuery);
     }
 
     public function roles(): array
