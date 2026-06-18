@@ -1,4 +1,8 @@
-# PHPClaw for Laravel
+<p align="center">
+  <img src="art/logo.png" width="128" alt="PHPClaw for Laravel logo">
+</p>
+
+<h1 align="center">PHPClaw for Laravel</h1>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/kevariable/phpclaw-laravel.svg?style=flat-square)](https://packagist.org/packages/kevariable/phpclaw-laravel)
 [![run-tests](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml)
