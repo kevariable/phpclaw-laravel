@@ -12,6 +12,7 @@ use Kevariable\PhpclawLaravel\Console\ChatCommand;
 use Kevariable\PhpclawLaravel\Console\ModulesCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
+use Kevariable\PhpclawLaravel\Console\StatusCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
 use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
@@ -38,6 +39,7 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 RolesCommand::class,
                 ToolsCommand::class,
                 ModulesCommand::class,
+                StatusCommand::class,
                 ChatCommand::class,
             ]);
     }

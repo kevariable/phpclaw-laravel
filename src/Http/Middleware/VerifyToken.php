@@ -8,15 +8,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class VerifyBrowserToken
+class VerifyToken
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $configKey): Response
     {
-        $expected = (string) config('phpclaw.browser.token');
+        $expected = (string) config("phpclaw.{$configKey}");
         $provided = (string) $request->bearerToken();
 
         if ($expected === '' || ! hash_equals($expected, $provided)) {
-            abort(401, 'Invalid PHPClaw browser token.');
+            abort(401, 'Invalid PHPClaw token.');
         }
 
         return $next($request);

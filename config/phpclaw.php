@@ -84,6 +84,10 @@ return [
         ListModulesQuery::class => ListModulesHandler::class,
     ],
 
+    'api' => [
+        'token' => env('PHPCLAW_API_TOKEN', ''),
+    ],
+
     'browser' => [
         'token' => env('PHPCLAW_BROWSER_TOKEN', ''),
         'await_attempts' => 240,
