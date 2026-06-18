@@ -8,17 +8,28 @@ use Illuminate\Console\Command;
 use Kevariable\PhpclawLaravel\Exceptions\GenerationFailedException;
 use Kevariable\PhpclawLaravel\Exceptions\UnknownRoleException;
 use Kevariable\PhpclawLaravel\Phpclaw;
+use Kevariable\PhpclawLaravel\Tasks\TaskDispatcher;
 
 class RunCommand extends Command
 {
-    protected $signature = 'phpclaw:run {role} {prompt}';
+    protected $signature = 'phpclaw:run {role} {prompt} {--queue}';
 
     protected $description = 'Run a one-shot agent generation for the given role.';
 
-    public function handle(Phpclaw $phpclaw): int
+    public function handle(Phpclaw $phpclaw, TaskDispatcher $dispatcher): int
     {
+        $role = (string) $this->argument('role');
+        $prompt = (string) $this->argument('prompt');
+
+        if ($this->option('queue')) {
+            $id = $dispatcher->dispatch($role, $prompt);
+            $this->components->info("Queued as task {$id}.");
+
+            return self::SUCCESS;
+        }
+
         try {
-            $result = $phpclaw->run((string) $this->argument('role'), (string) $this->argument('prompt'));
+            $result = $phpclaw->run($role, $prompt);
         } catch (UnknownRoleException|GenerationFailedException $e) {
             $this->components->error($e->getMessage());
 

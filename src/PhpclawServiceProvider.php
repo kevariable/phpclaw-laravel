@@ -17,12 +17,15 @@ use Kevariable\PhpclawLaravel\Console\RunCommand;
 use Kevariable\PhpclawLaravel\Console\SessionsCommand;
 use Kevariable\PhpclawLaravel\Console\SessionShowCommand;
 use Kevariable\PhpclawLaravel\Console\StatusCommand;
+use Kevariable\PhpclawLaravel\Console\TasksCommand;
+use Kevariable\PhpclawLaravel\Console\TaskShowCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
 use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
 use Kevariable\PhpclawLaravel\Contracts\MemoryStore;
 use Kevariable\PhpclawLaravel\Contracts\SessionStore;
+use Kevariable\PhpclawLaravel\Contracts\TaskStore;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Drivers\LaravelAiDriver;
 use Kevariable\PhpclawLaravel\Memory\CacheMemoryStore;
@@ -30,6 +33,7 @@ use Kevariable\PhpclawLaravel\Routing\ModuleRegistry;
 use Kevariable\PhpclawLaravel\Routing\RoleRouter;
 use Kevariable\PhpclawLaravel\Sessions\CacheSessionStore;
 use Kevariable\PhpclawLaravel\Support\PathResolver;
+use Kevariable\PhpclawLaravel\Tasks\CacheTaskStore;
 use Kevariable\PhpclawLaravel\Tools\ArrayToolRegistry;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -52,6 +56,8 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 SessionShowCommand::class,
                 MemoryShowCommand::class,
                 MemoryCompactCommand::class,
+                TasksCommand::class,
+                TaskShowCommand::class,
                 ChatCommand::class,
             ]);
     }
@@ -115,6 +121,10 @@ class PhpclawServiceProvider extends PackageServiceProvider
         ));
 
         $this->app->singleton(MemoryStore::class, fn (Application $app): MemoryStore => new CacheMemoryStore(
+            $app['cache']->store(),
+        ));
+
+        $this->app->singleton(TaskStore::class, fn (Application $app): TaskStore => new CacheTaskStore(
             $app['cache']->store(),
         ));
 

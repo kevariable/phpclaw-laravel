@@ -46,7 +46,7 @@ class CacheMemoryStore implements MemoryStore
         }
 
         $removed = count($notes) - $keep;
-        $this->cache->forever(self::KEY, array_values(array_slice($notes, -$keep)));
+        $this->cache->forever(self::KEY, array_slice($notes, -$keep));
 
         return $removed;
     }
