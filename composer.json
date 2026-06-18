@@ -19,7 +19,6 @@
     ],
     "require": {
         "php": "^8.3",
-        "laravel/ai": "^0.8",
         "illuminate/contracts": "^12.0||^13.0",
         "illuminate/http": "^12.0||^13.0",
         "illuminate/support": "^12.0||^13.0",
@@ -27,6 +26,7 @@
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
+        "laravel/ai": "^0.8",
         "laravel/pint": "^1.14",
         "nunomaduro/collision": "^8.8",
         "orchestra/testbench": "^10.0||^11.0",
@@ -36,6 +36,9 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0"
+    },
+    "suggest": {
+        "laravel/ai": "Required for the built-in Gemini driver (LaravelAiDriver). Needs Laravel 12.62+ or 13. Without it, bind your own Kevariable\\PhpclawLaravel\\Contracts\\LlmDriver implementation."
     },
     "autoload": {
         "psr-4": {
