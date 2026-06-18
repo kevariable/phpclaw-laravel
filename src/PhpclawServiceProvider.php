@@ -12,15 +12,19 @@ use Kevariable\PhpclawLaravel\Console\ChatCommand;
 use Kevariable\PhpclawLaravel\Console\ModulesCommand;
 use Kevariable\PhpclawLaravel\Console\RolesCommand;
 use Kevariable\PhpclawLaravel\Console\RunCommand;
+use Kevariable\PhpclawLaravel\Console\SessionsCommand;
+use Kevariable\PhpclawLaravel\Console\SessionShowCommand;
 use Kevariable\PhpclawLaravel\Console\StatusCommand;
 use Kevariable\PhpclawLaravel\Console\ToolsCommand;
 use Kevariable\PhpclawLaravel\Contracts\BrowserBridge;
 use Kevariable\PhpclawLaravel\Contracts\CommandBus;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
+use Kevariable\PhpclawLaravel\Contracts\SessionStore;
 use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Drivers\LaravelAiDriver;
 use Kevariable\PhpclawLaravel\Routing\ModuleRegistry;
 use Kevariable\PhpclawLaravel\Routing\RoleRouter;
+use Kevariable\PhpclawLaravel\Sessions\CacheSessionStore;
 use Kevariable\PhpclawLaravel\Support\PathResolver;
 use Kevariable\PhpclawLaravel\Tools\ArrayToolRegistry;
 use Spatie\LaravelPackageTools\Package;
@@ -40,6 +44,8 @@ class PhpclawServiceProvider extends PackageServiceProvider
                 ToolsCommand::class,
                 ModulesCommand::class,
                 StatusCommand::class,
+                SessionsCommand::class,
+                SessionShowCommand::class,
                 ChatCommand::class,
             ]);
     }
@@ -96,6 +102,10 @@ class PhpclawServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(Phpclaw::class, fn (Application $app): Phpclaw => new Phpclaw(
             $app->make(CommandBus::class),
+        ));
+
+        $this->app->singleton(SessionStore::class, fn (Application $app): SessionStore => new CacheSessionStore(
+            $app['cache']->store(),
         ));
 
         $this->app->singleton(BrowserBridge::class, function (Application $app): BrowserBridge {
