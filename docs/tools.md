@@ -57,7 +57,7 @@ use Kevariable\PhpclawLaravel\Facades\Phpclaw;
 Phpclaw::prohibitDangerousTools();   // e.g. in production
 ```
 
-They are allowed by default (like migration prohibition). Call `prohibit()` — typically in a production service provider — to disable them. File tools remain path-scoped via `PathResolver`. See [SECURITY.md](../SECURITY.md).
+They are **prohibited by default** — call `DangerousTools::allow()` (e.g. in a service provider, or only in trusted/local environments) to enable them. `prohibit()` / the facade re-locks them. File tools remain path-scoped via `PathResolver`. See [SECURITY.md](../SECURITY.md).
 
 ## Adding a tool
 

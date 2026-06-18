@@ -5,7 +5,13 @@ declare(strict_types=1);
 use Kevariable\PhpclawLaravel\DangerousTools;
 use Kevariable\PhpclawLaravel\Exceptions\DangerousToolsProhibitedException;
 
-it('allows by default and guards without throwing (happy path)', function () {
+it('ships prohibited by default (safety)', function () {
+    $default = (new ReflectionClass(DangerousTools::class))->getDefaultProperties()['prohibited'];
+
+    expect($default)->toBeTrue();
+});
+
+it('guards without throwing once allowed (happy path)', function () {
     DangerousTools::allow();
     DangerousTools::guard();
 

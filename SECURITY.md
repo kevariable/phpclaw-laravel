@@ -9,4 +9,4 @@ Please include enough detail to reproduce the issue. You will get an acknowledge
 
 ## Notes on the agent's powerful tools
 
-This package can register tools that read the filesystem and make HTTP requests. The destructive/system tools (shell execution, process control, raw database queries, file writes/deletes) are intentionally **not** shipped enabled — they are only available if you add them yourself. Treat any agent that can run tools as a privileged actor and scope the `phpclaw.tools_root`, the registered tools, and the browser token accordingly.
+This package can register tools that read the filesystem and make HTTP requests. The dangerous tools (shell execution, file writes/appends/deletes, directory creation, file moves, raw database queries) ship registered but are **prohibited by default** — every call is gated and throws unless you explicitly call `Kevariable\PhpclawLaravel\DangerousTools::allow()`. Enable them only in environments you trust. Treat any agent that can run tools as a privileged actor and scope the `phpclaw.tools_root`, the registered tools, and the API/browser tokens accordingly.

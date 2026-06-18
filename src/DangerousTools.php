@@ -8,7 +8,7 @@ use Kevariable\PhpclawLaravel\Exceptions\DangerousToolsProhibitedException;
 
 class DangerousTools
 {
-    protected static bool $prohibited = false;
+    protected static bool $prohibited = true;
 
     public static function allow(): void
     {

@@ -103,13 +103,13 @@ class WeatherTool implements Tool
 
 ### Dangerous tools
 
-`shell_exec`, `file_write`, and `delete_file` are shipped but every call is gated. Lock them down with one static call (e.g. in a production service provider):
+`shell_exec`, `file_write`, `file_append`, `delete_file`, `mkdir`, `move_file`, and `db_query` are shipped but **prohibited by default** — every call is gated like Laravel's `DB::prohibitDestructiveCommands()`. Opt in when you trust the environment:
 
 ```php
 use Kevariable\PhpclawLaravel\DangerousTools;
 
-DangerousTools::prohibit();   // any dangerous tool now throws DangerousToolsProhibitedException
-DangerousTools::allow();      // re-enable (the default)
+DangerousTools::allow();      // enable (off by default) — any dangerous tool works
+DangerousTools::prohibit();   // re-lock; calls throw DangerousToolsProhibitedException
 
 // or via the facade:
 Phpclaw::prohibitDangerousTools();
