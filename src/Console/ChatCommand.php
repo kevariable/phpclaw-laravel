@@ -48,6 +48,11 @@ class ChatCommand extends Command
                     $this->thinkingMessage(),
                 );
 
+                foreach ($result->steps as $step) {
+                    $this->line("\e[2m→ {$step->name}(".(string) json_encode($step->arguments).")\e[0m");
+                    $this->line("\e[2m← ".str($step->result)->limit(200)."\e[0m");
+                }
+
                 $this->line($markdown->render($result->text));
 
                 if ($sessionId !== null) {

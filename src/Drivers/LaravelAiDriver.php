@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Kevariable\PhpclawLaravel\Drivers;
 
+use Illuminate\Support\Collection;
 use Kevariable\PhpclawLaravel\Contracts\LlmDriver;
 use Kevariable\PhpclawLaravel\Contracts\Tool;
 use Kevariable\PhpclawLaravel\Data\GenerationRequest;
 use Kevariable\PhpclawLaravel\Data\GenerationResult;
+use Kevariable\PhpclawLaravel\Data\ToolCall;
 use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Messages\Message;
+use Laravel\Ai\Responses\Data\ToolResult;
 
 class LaravelAiDriver implements LlmDriver
 {
@@ -33,7 +36,21 @@ class LaravelAiDriver implements LlmDriver
             text: (string) $response,
             provider: $request->provider,
             model: $request->model,
+            steps: $this->toSteps($response->toolResults),
         );
+    }
+
+    /**
+     * @param  Collection<int, ToolResult>  $toolResults
+     * @return list<ToolCall>
+     */
+    protected function toSteps(Collection $toolResults): array
+    {
+        return $toolResults->map(fn (ToolResult $result): ToolCall => new ToolCall(
+            name: $result->name,
+            arguments: $result->arguments,
+            result: is_string($result->result) ? $result->result : (string) json_encode($result->result),
+        ))->values()->all();
     }
 
     protected function toMessages(array $messages): array
