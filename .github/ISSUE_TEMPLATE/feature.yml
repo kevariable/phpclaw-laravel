@@ -1,0 +1,32 @@
+name: Feature Request
+description: Suggest an idea or improvement for PHPClaw for Laravel
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for helping improve PHPClaw for Laravel. Please describe what you'd like to see.
+    - type: textarea
+      id: problem
+      attributes:
+          label: What problem does this solve?
+          description: What are you trying to do that PHPClaw for Laravel makes hard or impossible today?
+          placeholder: I want to X, but currently I have to Y.
+      validations:
+          required: true
+    - type: textarea
+      id: proposal
+      attributes:
+          label: Proposed solution
+          description: How would you like it to work? API sketches, config, or commands welcome.
+          placeholder: A new tool / role / command / driver that ...
+      validations:
+          required: true
+    - type: textarea
+      id: alternatives
+      attributes:
+          label: Alternatives considered
+          description: Other approaches you've tried or thought about.
+      validations:
+          required: false
