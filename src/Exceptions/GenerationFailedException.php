@@ -11,6 +11,8 @@ class GenerationFailedException extends RuntimeException
 {
     public static function allCandidatesFailed(string $role, ?Throwable $previous = null): self
     {
-        return new self("All model candidates for role [{$role}] failed to generate a response.", 0, $previous);
+        $reason = $previous instanceof Throwable ? ' Last error: '.$previous->getMessage() : '';
+
+        return new self("All model candidates for role [{$role}] failed to generate a response.{$reason}", 0, $previous);
     }
 }
