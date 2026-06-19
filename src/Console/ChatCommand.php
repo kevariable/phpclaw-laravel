@@ -11,6 +11,8 @@ use Kevariable\PhpclawLaravel\Phpclaw;
 use Kevariable\PhpclawLaravel\Support\ConsoleMarkdown;
 use Throwable;
 
+use function Laravel\Prompts\spin;
+
 class ChatCommand extends Command
 {
     protected $signature = 'phpclaw:chat {--role=reasoning} {--module=} {--session=}';
@@ -39,9 +41,12 @@ class ChatCommand extends Command
             try {
                 $messages = $sessionId === null ? [] : $sessions->transcript($sessionId);
 
-                $result = $module !== ''
-                    ? $phpclaw->runModule($module, $prompt, $messages)
-                    : $phpclaw->run($role, $prompt, $tools->all(), '', $messages);
+                $result = spin(
+                    fn () => $module !== ''
+                        ? $phpclaw->runModule($module, $prompt, $messages)
+                        : $phpclaw->run($role, $prompt, $tools->all(), '', $messages),
+                    $this->thinkingMessage(),
+                );
 
                 $this->line($markdown->render($result->text));
 
@@ -53,6 +58,13 @@ class ChatCommand extends Command
                 $this->components->error($e->getMessage());
             }
         }
+    }
+
+    protected function thinkingMessage(): string
+    {
+        $messages = ['Thinking', 'Pondering', 'Reasoning', 'Philosophising', 'Consulting the model', 'Crunching tokens'];
+
+        return $messages[array_rand($messages)].'…';
     }
 
     protected function resolveSession(SessionStore $sessions, string $session): ?string
