@@ -31,6 +31,11 @@ use Kevariable\PhpclawLaravel\Tools\ProjectDetectTool;
 use Kevariable\PhpclawLaravel\Tools\ShellExecTool;
 use Kevariable\PhpclawLaravel\Tools\SystemInfoTool;
 
+$provider = env('PHPCLAW_PROVIDER', 'gemini');
+$model = env('PHPCLAW_MODEL', 'gemini-2.5-flash');
+$fastModel = env('PHPCLAW_FAST_MODEL', 'gemini-2.5-flash-lite');
+$proModel = env('PHPCLAW_PRO_MODEL', 'gemini-2.5-pro');
+
 return [
 
     'default_role' => 'reasoning',
@@ -38,27 +43,27 @@ return [
     'roles' => [
 
         'reasoning' => [
-            'provider' => 'gemini',
-            'model' => 'gemini-2.5-flash',
+            'provider' => $provider,
+            'model' => $model,
             'timeout' => 120,
             'fallback' => [
-                ['provider' => 'gemini', 'model' => 'gemini-2.5-flash-lite'],
+                ['provider' => $provider, 'model' => $fastModel],
             ],
         ],
 
         'fast' => [
-            'provider' => 'gemini',
-            'model' => 'gemini-2.5-flash-lite',
+            'provider' => $provider,
+            'model' => $fastModel,
             'timeout' => 30,
             'fallback' => [],
         ],
 
         'coding' => [
-            'provider' => 'gemini',
-            'model' => 'gemini-2.5-pro',
+            'provider' => $provider,
+            'model' => $proModel,
             'timeout' => 300,
             'fallback' => [
-                ['provider' => 'gemini', 'model' => 'gemini-2.5-flash'],
+                ['provider' => $provider, 'model' => $model],
             ],
         ],
 

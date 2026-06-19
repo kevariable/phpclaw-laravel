@@ -8,7 +8,7 @@
 [![run-tests](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml/badge.svg)](https://github.com/kevariable/phpclaw-laravel/actions/workflows/run-tests.yml)
 [![PHPStan](https://github.com/kevariable/phpclaw-laravel/actions/workflows/phpstan.yml/badge.svg)](https://github.com/kevariable/phpclaw-laravel/actions/workflows/phpstan.yml)
 
-A role-routed, tool-using AI agent platform for Laravel, built on the [Laravel AI SDK](https://github.com/laravel/ai). Inspired by [PHPClaw](https://github.com/vilanobeachflorida/phpclaw), rebuilt the Laravel way: SOLID, CQRS, and a driver port so the whole agent layer is testable without ever calling a model.
+A role-routed, tool-using AI agent platform for Laravel — **model-agnostic**. The core depends on a small `LlmDriver` port, so it works with any LLM: the [Laravel AI SDK](https://github.com/laravel/ai) (OpenAI, Anthropic, Gemini, Bedrock, …), [Prism](https://github.com/prism-php/prism), or your own driver. Inspired by [PHPClaw](https://github.com/vilanobeachflorida/phpclaw), rebuilt the Laravel way: SOLID, CQRS, and a driver port so the whole agent layer is testable without ever calling a model.
 
 Full docs in [docs/](docs/): [architecture](docs/architecture.md) · [routing](docs/routing.md) · [tools](docs/tools.md) · [modules](docs/modules.md) · [sessions](docs/sessions.md) · [memory](docs/memory.md) · [tasks](docs/tasks.md) · [REST API](docs/api.md) · [commands](docs/commands.md) · [browser control](docs/browser.md) · [development](docs/development.md).
 
@@ -33,16 +33,29 @@ composer require kevariable/phpclaw-laravel
 php artisan vendor:publish --tag="phpclaw-laravel-config"
 ```
 
-For the built-in Gemini driver, also install the Laravel AI SDK (needs Laravel 12.62+ or 13) and set your key — or bind your own `LlmDriver` and skip it:
+### Pick an LLM provider
 
-```bash
-composer require laravel/ai
-```
+Roles point at a `provider` + `model`, driven by env (defaults shown):
 
 ```dotenv
-GEMINI_API_KEY=your-key
+PHPCLAW_PROVIDER=gemini             # any provider your driver supports (openai, anthropic, gemini, ollama, …)
+PHPCLAW_MODEL=gemini-2.5-flash
+PHPCLAW_FAST_MODEL=gemini-2.5-flash-lite
+PHPCLAW_PRO_MODEL=gemini-2.5-pro
+
 PHPCLAW_API_TOKEN=a-long-random-string      # for the REST API
 PHPCLAW_BROWSER_TOKEN=a-long-random-string  # for the browser extension
+```
+
+Then choose how the package talks to that provider — it ships with the `LlmDriver` port and three ways to fill it:
+
+1. **Laravel AI SDK** (default driver) — `composer require laravel/ai` (Laravel 12.62+ / 13), configure its provider. Supports OpenAI, Anthropic, Gemini, Bedrock, and more.
+2. **Prism** — if your app already uses [Prism](https://github.com/prism-php/prism), bind a tiny Prism driver (see [docs/drivers.md](docs/drivers.md)).
+3. **Your own** — implement `Kevariable\PhpclawLaravel\Contracts\LlmDriver` and bind it.
+
+```php
+// Bring your own driver:
+$this->app->singleton(\Kevariable\PhpclawLaravel\Contracts\LlmDriver::class, MyDriver::class);
 ```
 
 ## Usage

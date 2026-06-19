@@ -20,10 +20,15 @@ Publish the config with `php artisan vendor:publish --tag="phpclaw-laravel-confi
 ## Environment variables
 
 ```dotenv
-GEMINI_API_KEY=...            # consumed by the Laravel AI SDK's gemini provider
-PHPCLAW_API_TOKEN=...         # REST chat API
-PHPCLAW_BROWSER_TOKEN=...     # browser extension
+PHPCLAW_PROVIDER=gemini             # provider used by every role (openai, anthropic, gemini, ollama, …)
+PHPCLAW_MODEL=gemini-2.5-flash      # primary model
+PHPCLAW_FAST_MODEL=gemini-2.5-flash-lite
+PHPCLAW_PRO_MODEL=gemini-2.5-pro
+PHPCLAW_API_TOKEN=...               # REST chat API
+PHPCLAW_BROWSER_TOKEN=...           # browser extension
 ```
+
+The role `provider`/`model` defaults read from `PHPCLAW_PROVIDER` / `PHPCLAW_MODEL` etc., so the package is not tied to any one provider — point them at whatever your bound `LlmDriver` supports.
 
 ## Bindings
 

@@ -6,7 +6,9 @@ namespace Kevariable\PhpclawLaravel\Console;
 
 use Illuminate\Console\Command;
 use Kevariable\PhpclawLaravel\Contracts\SessionStore;
+use Kevariable\PhpclawLaravel\Contracts\ToolRegistry;
 use Kevariable\PhpclawLaravel\Phpclaw;
+use Kevariable\PhpclawLaravel\Support\ConsoleMarkdown;
 use Throwable;
 
 class ChatCommand extends Command
@@ -15,12 +17,13 @@ class ChatCommand extends Command
 
     protected $description = 'Start an interactive chat session with the agent.';
 
-    public function handle(Phpclaw $phpclaw, SessionStore $sessions): int
+    public function handle(Phpclaw $phpclaw, SessionStore $sessions, ToolRegistry $tools): int
     {
         $role = (string) $this->option('role');
         $module = (string) $this->option('module');
         $sessionId = $this->resolveSession($sessions, (string) $this->option('session'));
         $label = $module !== '' ? "module [{$module}]" : "role [{$role}]";
+        $markdown = new ConsoleMarkdown;
 
         $this->components->info("PHPClaw chat using {$label}. Type 'exit' to quit.");
 
@@ -38,9 +41,9 @@ class ChatCommand extends Command
 
                 $result = $module !== ''
                     ? $phpclaw->runModule($module, $prompt, $messages)
-                    : $phpclaw->run($role, $prompt, [], '', $messages);
+                    : $phpclaw->run($role, $prompt, $tools->all(), '', $messages);
 
-                $this->line($result->text);
+                $this->line($markdown->render($result->text));
 
                 if ($sessionId !== null) {
                     $sessions->append($sessionId, 'user', $prompt);
