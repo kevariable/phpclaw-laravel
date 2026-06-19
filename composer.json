@@ -1,6 +1,6 @@
 {
     "name": "kevariable/phpclaw-laravel",
-    "description": "Role-routed, tool-using AI agent core for Laravel, powered by the Laravel AI SDK.",
+    "description": "Role-routed, tool-using AI agent platform for Laravel that works with any LLM (Laravel AI SDK, Prism, or your own driver).",
     "keywords": [
         "kevariable",
         "laravel",
